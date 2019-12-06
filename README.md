@@ -1,3 +1,36 @@
+# Fork of [kubeval]
+
+This exists to bake a version of the schema into a docker image with `kubeval` for those of us behind a proxy
+
+currently supported:-
+* 1.15.4 as `:v1.15.4`
+* master as `:latest`
+
+These are built in [dockerhub]
+
+If you use 1.15.4 then you need to pass `--kubernetes-version 1.15.4` on the commandline
+
+They work by using a branch and messing with [.dockerignore] - this file doesn't exist on the master branch! switch to a different branch
+
+
+## Usage 
+```
+docker run -i --rm -v $(pwd):/work \
+     dockerhub.artifactory.ai.cba/jeremymarshall/kubeval:1.15.4 \
+     --strict --kubernetes-version 1.15.4 <files> 
+```
+
+or my favourite
+```
+kustomize build <dir> | | docker run -i --rm \
+        -v $(pwd):/work dockerhub.artifactory.ai.cba/jeremymarshall/kubeval:1.15.4  \
+        --filename="kustomize" --output=tap --strict --kubernetes-version 1.15.4
+```
+
+Sadly `kustomize` chokes if it receives invalid config
+
+Back to the main Readme
+
 # Kubernetes JSON Schemas
 
 While exploring tooling for Kubernetes I had need for schemas to
@@ -84,3 +117,7 @@ It's not Kubernetes specific and should work with other OpenAPI
 APIs too. This should be useful if you're using a pre-release or otherwise
 modified version of Kubernetes, or something like OpenShift which extends the
 standard APIs with additional types.
+
+[kubeval]: https://github.com/instrumenta/kubeval
+[dockerhub]: https://hub.docker.com/repository/docker/jeremymarshall/kubeval
+[.dockerignore]: ./.dockerignore
